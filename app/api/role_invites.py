@@ -24,7 +24,6 @@ class RoleInviteListPost(ResourceList):
     """
     Create role invites
     """
-
     def before_post(self, args, kwargs, data):
         """
         before get method to get the resource id for fetching details
@@ -44,10 +43,11 @@ class RoleInviteListPost(ResourceList):
         :param view_kwargs:
         :return:
         """
+        role_already_exists = False 
         if 'email' in data and 'event' in data:
             role_already_exists = RoleInvite.query.filter_by(
                 email=data['email'], event_id=data['event']
-            ).count()
+            ).count() > 0 
         if role_already_exists:
             raise ConflictError(
                 {'source': '/data'}, 'Role Invite has already been sent for this email.'
